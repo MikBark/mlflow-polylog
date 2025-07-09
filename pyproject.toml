@@ -98,9 +98,6 @@ select = [
   "W",    # pycodestyle
   "YTT",  # flake8-2020
 ]
-ignore = [
-  "TRY", # Too many incorrectly recognized errors in the TypeMapping class because this class uses reflection
-]
 external = [ "WPS" ]
 
 flake8-import-conventions.banned-from = [ "ast" ]
@@ -111,6 +108,7 @@ pydocstyle.convention = "google"
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
 "defaults.py" = ["PLC0415", "PLR0912", "C901"]
+"type_mapping.py" = ["TRY"]
 
 [tool.flake8]
 max-line-length = 90

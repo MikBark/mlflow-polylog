@@ -2,6 +2,7 @@ import pytest
 from pytest_lazyfixture import lazy_fixture as lf
 
 from mlflow_polymodel import log_model
+from tests.utils import assert_mlflow_model_logged
 
 
 @pytest.mark.parametrize(
@@ -28,4 +29,4 @@ from mlflow_polymodel import log_model
 )
 def test_log(model, mlflow_run):
     log_model(model, artifact_path='model_artifacts')
-    assert_model_logged(mlflow_run['get_artifact_path']('model_artifacts'))
+    assert_mlflow_model_logged(mlflow_run['get_artifact_path']('model_artifacts'))
