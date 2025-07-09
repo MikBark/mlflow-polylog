@@ -27,7 +27,7 @@ tests = [
     "scikit-learn",
     "torch",
     "tensorflow==2.19.0",
-    "fastai",
+    "fastai==2.5.*",
     "mxnet",
     "statsmodels",
     "prophet",
@@ -126,8 +126,6 @@ local_partial_types = true
 warn_unreachable = true
 warn_return_any = false
 disallow_subclassing_any = false
-
-plugins = ["pydantic.mypy"]
 
 disable_error_code = ["attr-defined"]
 
