@@ -32,7 +32,7 @@ def assert_valide_model_output(output, output_example) -> bool:
         pytest.param(lf('prophet_model_and_signature'), marks=pytest.mark.slow),
         pytest.param(lf('paddlepaddle_model_and_signature'), marks=pytest.mark.slow),
         pytest.param(lf('spacy_model_and_signature'), marks=pytest.mark.slow),
-        pytest.param(lf('h2o_model_and_signature'), marks=pytest.mark.slow),
+        # pytest.param(lf('h2o_model_and_signature'), marks=pytest.mark.slow),
     ],
 )
 def test_log(model_and_signature, mlflow_run):

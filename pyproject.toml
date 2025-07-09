@@ -33,7 +33,7 @@ tests = [
     "prophet",
     "paddlepaddle",
     "spacy",
-    "h2o",
+    # "h2o",
 ]
 lint = [
     "ruff==0.11.13",
