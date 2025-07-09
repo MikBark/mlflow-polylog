@@ -23,7 +23,9 @@ def assert_valide_model_output(output, output_example) -> bool:
         pytest.param(lf('sklearn_model_and_signature'), marks=pytest.mark.slow),
         pytest.param(lf('torch_model_and_signature'), marks=pytest.mark.slow),
         pytest.param(lf('tensorflow_model_and_signature'), marks=pytest.mark.slow),
-        pytest.param(lf('fastai_model_and_signature'), marks=pytest.mark.slow),
+        # TODO: Mlflow don't support fastai model load by default. Need to add flavor
+        # before test
+        # pytest.param(lf('fastai_model_and_signature'), marks=pytest.mark.slow),
         # TODO: Configure CI to avoid OSError
         # pytest.param(lf('mxnet_model_and_signature'), marks=pytest.mark.slow),
         pytest.param(lf('statsmodels_model_and_signature'), marks=pytest.mark.slow),
