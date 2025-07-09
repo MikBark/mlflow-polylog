@@ -10,10 +10,10 @@ authors = [
     {name = "Barkov Mikhail", email = "mik.bar@tutamail.com"},
 ]
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
     'mlflow>=2.13.0',
-    'importlib-metadata; python_version>="3.12"',
+    'importlib-metadata; python_version>="3.10"',
 ]
 
 [project.optional-dependencies]
@@ -51,7 +51,7 @@ include = [ "mlflow_polymodel" ]
 [tool.ruff]
 preview = true
 fix = true
-target-version = "py39"
+target-version = "py310"
 line-length = 90
 
 [tool.ruff.format]
