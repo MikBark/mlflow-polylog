@@ -334,6 +334,7 @@ def h2o_model():
         ntrees=1,
         max_depth=1,
         learn_rate=1.0,
+        min_rows=1,
     )
     model.train(x=['feature1', 'feature2'], y='target', training_frame=df)
 
