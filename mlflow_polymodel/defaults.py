@@ -50,12 +50,6 @@ def get_default_log() -> PolymorphicModelLog:
 
         available_logs[catboost.CatBoost] = mlflow.catboost.log_model
 
-    if _is_installed('lightgbm'):
-        import lightgbm
-
-        available_logs[lightgbm.Booster] = mlflow.lightgbm.log_model
-        available_logs[lightgbm.LGBMModel] = mlflow.lightgbm.log_model
-
     if _is_installed('xgboost'):
         import xgboost
 
