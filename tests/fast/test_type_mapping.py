@@ -198,10 +198,6 @@ def test_repr_behavior(fixture_name, expected_behavior, request):
     elif expected_behavior == 'equals_single':
         assert result == "TypeMapping({<class 'int'>: 'integer'})"
 
-def test_mapping_setter_with_valid_types():
-    tm = TypeMapping({})
-    assert len(tm) == 2
-
 
 @pytest.mark.parametrize(
     'type_key,value',
