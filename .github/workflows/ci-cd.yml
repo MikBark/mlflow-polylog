@@ -63,7 +63,7 @@ jobs:
     
     - name: Run tests with pytest
       run: |
-        uv run pytest --cov=. --cov-report=xml --junit-xml=test-results.xml
+        uv run pytest
     
     - name: Upload test results
       uses: actions/upload-artifact@v4
