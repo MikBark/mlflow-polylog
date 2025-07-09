@@ -1,5 +1,5 @@
 import pytest
-from pytest_lazyfixtures import lazy_fixture as lf
+from pytest_lazy_fixtures import lazy_fixture as lf
 
 from mlflow_polymodel import log_model
 from tests.utils import assert_mlflow_model_logged
