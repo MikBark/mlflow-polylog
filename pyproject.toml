@@ -1,0 +1,124 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mlflow_polymodel"
+version = "0.0.1rc1"
+description = "This module.."
+authors = [
+    {name = "Barkov Mikhail", email = "mik.bar@tutamail.com"},
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    'mlflow>=2.13.0',
+    'importlib-metadata; python_version>="3.12"', ]
+
+[project.optional-dependencies]
+tests = [
+    "pytest==8.3.4", "pytest-lazy-fixtures==1.1.2",
+]
+lint = [
+    "ruff==0.11.13",
+    "flake8==7.2.0",
+    "wemake-python-styleguide==1.1.0",
+    "flake8-pyproject==1.2.3",
+]
+typing = [
+    "mypy==1.15.0",
+]
+
+[tool.setuptools.packages.find]
+include = [ "mlflow_polymodel" ]
+
+[tool.ruff]
+preview = true
+fix = true
+target-version = "py312"
+line-length = 90
+
+[tool.ruff.format]
+quote-style = "single"
+
+[tool.ruff.lint]
+select = [
+  "A",    # flake8-builtins
+  "B",    # flake8-bugbear
+  "C4",   # flake8-comprehensions
+  "C90",  # mccabe complexity checker
+  "COM",  # flake8-commas
+  "D",    # pydocstyle
+  "DTZ",  # flake8-datetimez
+  "E",    # pycodestyle
+  "ERA",  # flake8-eradicate
+  "EXE",  # flake8-executable
+  "F",    # pyflakes
+  "FBT",  # flake8-boolean-trap
+  "FLY",  # pyflint
+  "FURB", # refurb
+  "G",    # flake8-logging-format
+  "I",    # isort
+  "ICN",  # flake8-import-conventions
+  "ISC",  # flake8-implicit-str-concat
+  "LOG",  # flake8-logging
+  "N",    # pep8-naming
+  "PERF", # perflint
+  "PIE",  # flake8-pie
+  "PL",   # pylint
+  "PT",   # flake8-pytest-style
+  "PTH",  # flake8-use-pathlib
+  "Q",    # flake8-quotes
+  "RET",  # flake8-return
+  "RSE",  # flake8-raise
+  "RUF",  # ruff
+  "S",    # flake8-bandit
+  "SIM",  # flake8-simplify
+  "SLF",  # flake8-self
+  "SLOT", # flake8-slots
+  "T100", # flake8-debugger
+  "TRY",  # tryceratops
+  "UP",   # pyupgrade
+  "W",    # pycodestyle
+  "YTT",  # flake8-2020
+]
+ignore = [
+  "TRY", # Too many incorrectly recognized errors in the TypeMapping class because this class uses reflection
+]
+external = [ "WPS" ]
+
+flake8-import-conventions.banned-from = [ "ast" ]
+flake8-quotes.inline-quotes = "single"
+mccabe.max-complexity = 6
+pydocstyle.convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+"defaults.py" = ["PLC0415", "PLR0912", "C901"]
+
+[tool.flake8]
+max-line-length = 90
+per-file-ignores = [
+  "mlflow_polymodel/type_mapping.py:WPS110",
+]
+
+[tool.mypy]
+ignore_missing_imports = true
+strict = true
+local_partial_types = true
+warn_unreachable = true
+warn_return_any = false
+disallow_subclassing_any = false
+
+plugins = ["pydantic.mypy"]
+
+enable_error_code = [
+  "truthy-bool",
+  "truthy-iterable",
+  "redundant-expr",
+  "unused-awaitable",
+  "possibly-undefined",
+  "redundant-self",
+  "unimported-reveal",
+  "deprecated",
+]
