@@ -27,7 +27,7 @@ tests = [
     "scikit-learn",
     "torch==2.2.2",
     "tensorflow==2.19.0",
-    "fastai==2.5.*",
+    # "fastai==2.5.*",
     "mxnet",
     "statsmodels",
     "prophet",
