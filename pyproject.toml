@@ -10,14 +10,30 @@ authors = [
     {name = "Barkov Mikhail", email = "mik.bar@tutamail.com"},
 ]
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.9"
 dependencies = [
     'mlflow>=2.13.0',
-    'importlib-metadata; python_version>="3.12"', ]
+    'importlib-metadata; python_version>="3.12"',
+]
 
 [project.optional-dependencies]
 tests = [
-    "pytest==8.3.4", "pytest-lazy-fixtures==1.1.2",
+    "pytest==8.3.4", 
+    "pytest-lazy-fixtures==1.1.2",
+    # Optional ML libraries for testing
+    "catboost",
+    "lightgbm", 
+    "xgboost",
+    "scikit-learn",
+    "torch",
+    "tensorflow",
+    "fastai",
+    "mxnet",
+    "statsmodels",
+    "prophet",
+    "paddlepaddle",
+    "spacy",
+    "h2o",
 ]
 lint = [
     "ruff==0.11.13",
@@ -35,7 +51,7 @@ include = [ "mlflow_polymodel" ]
 [tool.ruff]
 preview = true
 fix = true
-target-version = "py312"
+target-version = "py39"
 line-length = 90
 
 [tool.ruff.format]
