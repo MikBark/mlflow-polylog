@@ -7,22 +7,19 @@ with their corresponding logging functions.
 """
 
 from collections.abc import Callable
-from typing import Any, ParamSpec, TypeVar
+from typing import Any
 
 from mlflow_polymodel.type_mapping import TypeMapping
 
-LogModelParamSpec = ParamSpec('LogModelParamSpec')
-ModelType = TypeVar('ModelType')
 LogModelFunctionType = Callable[
-    [ModelType, LogModelParamSpec.args, LogModelParamSpec.kwargs],
-    None,
+    ..., None,
 ]
 
 
 def wrap_log(
     model_keyword: str,
     log_function: Callable[..., Any],
-) -> LogModelFunction:
+) -> LogModelFunctionType:
     """..."""
     return lambda model, *args, **kwargs: log_function(
         *args,
@@ -56,8 +53,8 @@ class PolymorphicModelLog:
     def __call__(
         self,
         model: Any,
-        *args: LogModelParamSpec.args,
-        **kwargs: LogModelParamSpec.kwargs,
+        *args: Any,
+        **kwargs: dict[str, Any],
     ) -> None:
         """Log the given model using the appropriate logging function.
 

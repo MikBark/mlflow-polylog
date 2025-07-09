@@ -26,6 +26,6 @@ from mlflow_polymodel import log_model
         pytest.param(lf('h2o_model'), marks=pytest.mark.slow),
     ],
 )
-def test_log(model, tmp_path):
-    log_model(model, artifact_path=tmp_path)
-    assert_model_logged(tmp_path)
+def test_log(model, mlflow_run):
+    log_model(model, artifact_path='model_artifacts')
+    assert_model_logged(mlflow_run['get_artifact_path']('model_artifacts'))

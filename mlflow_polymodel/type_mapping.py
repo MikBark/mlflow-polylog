@@ -7,7 +7,9 @@ lookups. The module also defines a custom exception for ambiguous key matches.
 """
 
 from collections.abc import Iterator, Mapping
-from typing import Any
+from typing import Any, TypeVar
+
+ValueType = TypeVar('ValueType')
 
 
 class MultipleTypeKeysError(KeyError):
@@ -37,7 +39,7 @@ class MultipleTypeKeysError(KeyError):
         return f'Key {self.key_to_find} is instance of many type keys {self.finded_keys}'
 
 
-class TypeMapping[ValueType](Mapping[type, ValueType]):
+class TypeMapping(Mapping[type, ValueType]):
     """Implement a read-only mapping from types to values with isinstance-based lookup.
 
     TypeMapping stores pairs of Python types and associated values. When queried
@@ -53,23 +55,28 @@ class TypeMapping[ValueType](Mapping[type, ValueType]):
         'string'
     """
 
-    def __init__(
-        self,
-        *maps: Mapping[type, ValueType],
-    ) -> None:
+    def __init__(self, *initial_mappings: Mapping[type, ValueType]) -> None:
         """Initialize the TypeMapping with a dictionary of type keys and values.
 
         Ensures that all keys are types and that no two type keys are in a
         subclass relationship, raising an error if these constraints are violated.
 
         Args:
-            *maps : Mapping of type keys to associated values. All keys must be
-                Python types. No key may be a subclass or superclass of any other key.
+            *initial_mappings : Mapping of type keys to associated values. All keys must
+                be Python types. No key may be a subclass or superclass of any other key.
 
         Raises:
             TypeError : If any key in init_mapping is not a Python type.
         """
-        self._map = maps
+        mapping = {}
+        for initial_mapping in initial_mappings:
+            for key, value in initial_mapping.items():
+                if not isinstance(key, type):
+                    raise TypeError(f'Key {key} must be a type')
+
+                mapping[key] = value
+
+        self._map = mapping
 
     def __getitem__(self, key: Any) -> ValueType:
         """Return the value for the type key matching the given key's type.
@@ -123,32 +130,3 @@ class TypeMapping[ValueType](Mapping[type, ValueType]):
             A string representation showing the stored type-value pairs.
         """
         return f'TypeMapping({dict(self._map)})'
-
-    @property
-    def _map(self) -> Mapping[type, ValueType]:
-        """Get the internal mapping of type keys to values.
-
-        Returns:
-            The internal mapping dictionary.
-        """
-        return self._internal_map
-
-    @_map.setter
-    def _map(self, *init_maps: Mapping[type, ValueType]) -> None:
-        """Set the internal mapping, enforcing type key constraints.
-
-        Ensures all keys are types and stores the mapping internally.
-
-        Args:
-            *init_maps : Mappings of type keys to values.
-
-        Raises:
-            TypeError : If any key in init_maps is not a Python type.
-        """
-        self._internal_map = {}
-        for init_map in init_maps:
-            for key, value in init_map.items():
-                if not isinstance(key, type):
-                    raise TypeError(f'Key {key} must be a type')
-
-                self._internal_map[key] = value

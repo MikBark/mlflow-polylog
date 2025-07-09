@@ -15,7 +15,7 @@ from mlflow_polymodel._internal import GLOBAL_LOG_STORE
 from mlflow_polymodel.log import LogModelFunctionType
 
 
-def log_model(model, *args, **kwargs) -> None:
+def log_model(model: Any, *args: Any, **kwargs: dict[str, Any]) -> None:
     """Log a model using the currently registered log function.
 
     Logs the provided model using the log function registered for its type. Additional
