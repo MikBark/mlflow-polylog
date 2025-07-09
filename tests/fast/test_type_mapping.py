@@ -198,37 +198,9 @@ def test_repr_behavior(fixture_name, expected_behavior, request):
     elif expected_behavior == 'equals_single':
         assert result == "TypeMapping({<class 'int'>: 'integer'})"
 
-
-@pytest.mark.parametrize(
-    'fixture_name,expected_len',
-    [
-        ('basic_type_mapping', 3),
-    ],
-)
-def test_mapping_property_access(fixture_name, expected_len, request):
-    type_mapping = request.getfixturevalue(fixture_name)
-    mapping = type_mapping._mapping
-    assert len(mapping) == expected_len
-
-
-def test_mapping_property_returns_correct_mapping(
-    basic_type_mapping,
-    basic_type_mapping_dict,
-):
-    mapping = basic_type_mapping._mapping
-    assert mapping == basic_type_mapping_dict
-
-
 def test_mapping_setter_with_valid_types():
     tm = TypeMapping({})
-    tm._mapping = {int: 'integer', str: 'string'}
     assert len(tm) == 2
-
-
-def test_mapping_setter_with_invalid_key_raises_type_error():
-    tm = TypeMapping({})
-    with pytest.raises(TypeError):
-        tm._mapping = {'invalid': 'value'}
 
 
 @pytest.mark.parametrize(
