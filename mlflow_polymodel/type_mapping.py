@@ -7,7 +7,8 @@ lookups. The module also defines a custom exception for ambiguous key matches.
 """
 
 from collections.abc import Iterator, Mapping
-from typing import Any, TypeVar
+from types import GenericAlias
+from typing import Any, TypeVar, get_origin
 
 ValueType = TypeVar('ValueType')
 
@@ -59,7 +60,8 @@ class TypeMapping(Mapping[type, ValueType]):
         """Initialize the TypeMapping with a dictionary of type keys and values.
 
         Ensures that all keys are types and that no two type keys are in a
-        subclass relationship, raising an error if these constraints are violated.
+        subclass relationship, raising an error if these constraints are violated and
+        convert all generic alias to the origin.
 
         Args:
             *initial_mappings : Mapping of type keys to associated values. All keys must
@@ -71,10 +73,12 @@ class TypeMapping(Mapping[type, ValueType]):
         mapping = {}
         for initial_mapping in initial_mappings:
             for key, value in initial_mapping.items():
-                if not isinstance(key, type):
+                origin_key = get_origin(key) if isinstance(key, GenericAlias) else key
+
+                if not isinstance(origin_key, type):
                     raise TypeError(f'Key {key} must be a type')
 
-                mapping[key] = value
+                mapping[origin_key] = value
 
         self._map = mapping
 
