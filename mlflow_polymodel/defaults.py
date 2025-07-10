@@ -59,7 +59,6 @@ def get_default_log() -> PolymorphicModelLog:
         import xgboost
 
         available_logs[xgboost.Booster] = mlflow.xgboost.log_model
-        available_logs[xgboost.XGBModel] = mlflow.xgboost.log_model
 
     if _is_installed('sklearn'):
         import sklearn.base
