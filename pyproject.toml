@@ -21,7 +21,6 @@ tests = [
     "pytest==8.3.4", 
     "pytest-lazy-fixtures==1.1.2",
     # Optional ML libraries for testing
-    "numpy==1.26.0",
     "catboost",
     "lightgbm", 
     "xgboost",

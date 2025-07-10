@@ -12,7 +12,8 @@ from typing import Any
 from mlflow_polymodel.type_mapping import TypeMapping
 
 LogModelFunctionType = Callable[
-    ..., None,
+    ...,
+    None,
 ]
 
 

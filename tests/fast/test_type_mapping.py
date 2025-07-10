@@ -2,7 +2,7 @@ import math
 
 import pytest
 
-from mlflow_polymodel.type_mapping import MultipleTypeKeysError, TypeMapping
+from mlflow_polymodel.type_mapping import AmbiguousTypeError, TypeMapping
 
 
 @pytest.fixture
@@ -110,34 +110,22 @@ def test_getitem_with_empty_mapping_raises_key_error(empty_type_mapping):
         empty_type_mapping[42]
 
 
-def test_getitem_with_multiple_matching_types_raises_multiple_type_keys_error():
+def test_getitem_with_ambiguous_matching_types_raises_ambiguous_type_keys_error():
     mapping = {object: 'object', int: 'integer'}
     tm = TypeMapping(mapping)
-    with pytest.raises(MultipleTypeKeysError) as exc_info:
+    with pytest.raises(AmbiguousTypeError) as exc_info:
         tm[42]
 
-    assert exc_info.value.key_to_find == 42
+    assert exc_info.value.value_to_find == 42
     assert set(exc_info.value.finded_keys) == {object, int}
 
 
-def test_getitem_with_subclass_inheritance_raises_multiple_type_keys_error():
+def test_getitem_with_subclass_inheritance_raises_ambiguous_type_keys_error():
     mapping = {Exception: 'exception', ValueError: 'value_error'}
     tm = TypeMapping(mapping)
     test_value = ValueError('test')
-    with pytest.raises(MultipleTypeKeysError) as exc_info:
+    with pytest.raises(AmbiguousTypeError) as exc_info:
         tm[test_value]
-
-    assert exc_info.value.key_to_find == test_value
-    assert set(exc_info.value.finded_keys) == {Exception, ValueError}
-
-
-def test_multiple_type_keys_error_attributes():
-    key = 42
-    keys = [object, int]
-    error = MultipleTypeKeysError(key, keys)
-
-    assert error.key_to_find == key
-    assert error.finded_keys == keys
 
 
 @pytest.mark.parametrize(

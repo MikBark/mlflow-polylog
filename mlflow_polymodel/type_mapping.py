@@ -13,31 +13,34 @@ from typing import Any, TypeVar, get_origin
 ValueType = TypeVar('ValueType')
 
 
-class MultipleTypeKeysError(KeyError):
-    """Raise when a key matches multiple type keys in TypeMapping.
+class AmbiguousTypeError(RuntimeError):
+    """Represent an ambiguous type-resolution failure."""
 
-    This exception is raised if a lookup key is an instance of multiple type keys
-    in the mapping, which creates ambiguity in value retrieval.
-    """
-
-    def __init__(self, key_to_find: Any, finded_keys: list[type]) -> None:
-        """Initialize MultipleTypeKeysError with the ambiguous key and matched types.
+    def __init__(
+        self,
+        message: str,
+        value_to_find: type,
+        finded_keys: tuple[type, ...],
+    ) -> None:
+        """Initialise the exception instance.
 
         Args:
-            key_to_find : The object that was being looked up.
-            finded_keys : List of type keys that matched the lookup key.
+            message : Human-readable error message describing the failure.
+            types : Original tuple of types that produced the ambiguity. Default
+                is an empty tuple.
         """
-        self.key_to_find = key_to_find
+        super().__init__(message)
+        self.value_to_find = value_to_find
         self.finded_keys = finded_keys
-        super().__init__(f'Key {key_to_find} is instance of many type keys {finded_keys}')
 
     def __repr__(self) -> str:
-        """Return the string representation of the exception.
-
-        Returns:
-            A string describing the ambiguous key and the matching type keys.
-        """
-        return f'Key {self.key_to_find} is instance of many type keys {self.finded_keys}'
+        """Return the official string representation of the exception."""
+        return (
+            self.__class__.__name__
+            + f'(message={self.args[0]},'
+            + f' value={self.value_to_find},'
+            + f' types={self.finded_keys})'
+        )
 
 
 class TypeMapping(Mapping[type, ValueType]):
@@ -107,8 +110,14 @@ class TypeMapping(Mapping[type, ValueType]):
 
         if len(keys) == 0:
             raise KeyError(f'No type found for instance {key} of type {type(key)}')
+
         if len(keys) > 1:
-            raise MultipleTypeKeysError(key, keys)
+            raise AmbiguousTypeError(
+                'To many types found',
+                value_to_find=key,
+                finded_keys=keys,
+            )
+
         return values[0]
 
     def __iter__(self) -> Iterator[type]:
