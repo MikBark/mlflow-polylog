@@ -1,12 +1,6 @@
-"""This module provides a type-based mapping utility for Python types.
+"""Provide a type-based mapping utility for Python types."""
 
-The module defines a TypeMapping class that allows mapping Python types to values,
-enabling value retrieval based on the runtime type of a given key. It enforces
-constraints to prevent subclass relationships among type keys, ensuring unambiguous
-lookups. The module also defines a custom exception for ambiguous key matches.
-"""
-
-from collections.abc import Iterator, Mapping
+from collections.abc import Iterator, Mapping, Sequence
 from types import GenericAlias
 from typing import Any, TypeVar, get_origin
 
@@ -14,20 +8,27 @@ ValueType = TypeVar('ValueType')
 
 
 class AmbiguousTypeError(RuntimeError):
-    """Represent an ambiguous type-resolution failure."""
+    """Signal an ambiguous match while resolving a type look-up.
+
+    The exception is raised when more than one stored type key matches the
+    instance supplied to `TypeMapping.__getitem__`.  It captures the
+    value that triggered the ambiguity as well as all candidate type keys so
+    that callers can decide how to disambiguate.
+    """
 
     def __init__(
         self,
         message: str,
-        value_to_find: type,
-        finded_keys: tuple[type, ...],
+        value_to_find: Any,
+        finded_keys: Sequence[type],
     ) -> None:
-        """Initialise the exception instance.
+        """Initialise the exception with context information.
 
         Args:
-            message : Human-readable error message describing the failure.
-            types : Original tuple of types that produced the ambiguity. Default
-                is an empty tuple.
+            message: Human-readable explanation of the failure.
+            value_to_find: The instance (not the type) that could not be resolved
+                unambiguously.
+            finded_keys: Sequence of type keys that matched the given instance.
         """
         super().__init__(message)
         self.value_to_find = value_to_find
@@ -44,34 +45,36 @@ class AmbiguousTypeError(RuntimeError):
 
 
 class TypeMapping(Mapping[type, ValueType]):
-    """Implement a read-only mapping from types to values with isinstance-based lookup.
+    """Implement a read-only mapping from ``type`` keys to arbitrary values.
 
-    TypeMapping stores pairs of Python types and associated values. When queried
-    with a key, it returns the value for the first type key for which
-    `isinstance(key, type_key)` is True. The mapping enforces that no two type
-    keys are in a subclass relationship to prevent ambiguous lookups.
+    The mapping behaves like a lightweight *dispatcher* that returns the value
+    registered for the first type key for which ``isinstance(key, type_key)``
+    evaluates to ``True``.  Because subclass relationships would introduce
+    ambiguity, the constructor refuses to store overlapping type keys.
 
-    Example usage:
+    Example:
         >>> tm = TypeMapping({int: "integer", str: "string"})
         >>> tm[5]
         'integer'
-        >>> tm["abc"]
+        >>> tm["hello"]
         'string'
     """
 
     def __init__(self, *initial_mappings: Mapping[type, ValueType]) -> None:
-        """Initialize the TypeMapping with a dictionary of type keys and values.
+        """Create a :class:`TypeMapping` from one or more dictionaries.
 
-        Ensures that all keys are types and that no two type keys are in a
-        subclass relationship, raising an error if these constraints are violated and
-        convert all generic alias to the origin.
+        All keys are normalised so that ``list[int]`` and similar
+        :class:`types.GenericAlias` objects are replaced by their origin
+        ``list``.  Keys must be real ``type`` objects and must not stand in a
+        subclass relationship with any other key.
 
         Args:
-            *initial_mappings : Mapping of type keys to associated values. All keys must
-                be Python types. No key may be a subclass or superclass of any other key.
+            *initial_mappings: Arbitrary number of ``Mapping`` objects whose
+                keys are Python types and whose values are of any type.
 
         Raises:
-            TypeError : If any key in init_mapping is not a Python type.
+            TypeError: If a key is not a Python ``type`` (after origin
+                normalisation) or if duplicate normalised keys are supplied.
         """
         mapping = {}
         for initial_mapping in initial_mappings:
@@ -86,20 +89,21 @@ class TypeMapping(Mapping[type, ValueType]):
         self._map = mapping
 
     def __getitem__(self, key: Any) -> ValueType:
-        """Return the value for the type key matching the given key's type.
+        """Return the value whose type key matches *key*.
 
-        Iterates through stored type keys and returns the value associated with
-        the first type key for which `isinstance(key, type_key)` is True.
+        The method iterates over the stored type keys in insertion order and
+        returns the first associated value for which ``isinstance(key,
+        type_key)`` holds.
 
         Args:
-            key : The object whose type will be checked against stored type keys.
+            key: The object used to determine the appropriate type key.
 
         Returns:
             The value associated with the matching type key.
 
         Raises:
-            KeyError : If no stored type key matches the type of the provided key.
-            MultipleTypeKeysError : If the key matches multiple type keys.
+            KeyError: If no stored key matches the type of *key*.
+            AmbiguousTypeError: If more than one stored key matches *key*.
         """
         keys = []
         values = []
@@ -113,7 +117,7 @@ class TypeMapping(Mapping[type, ValueType]):
 
         if len(keys) > 1:
             raise AmbiguousTypeError(
-                'To many types found',
+                'Too many types found',
                 value_to_find=key,
                 finded_keys=keys,
             )
@@ -121,25 +125,13 @@ class TypeMapping(Mapping[type, ValueType]):
         return values[0]
 
     def __iter__(self) -> Iterator[type]:
-        """Return an iterator over the stored type keys.
-
-        Returns:
-            An iterator over the type keys in the mapping.
-        """
+        """Return an iterator over stored type keys."""
         return iter(self._map.keys())
 
     def __len__(self) -> int:
-        """Return the number of type-value pairs in the mapping.
-
-        Returns:
-            The number of entries in the mapping.
-        """
+        """Return the number of key value pairs stored in the mapping."""
         return len(self._map)
 
     def __repr__(self) -> str:
-        """Return the string representation of the TypeMapping.
-
-        Returns:
-            A string representation showing the stored type-value pairs.
-        """
+        """Return the developer-oriented string representation of the mapping."""
         return f'TypeMapping({dict(self._map)})'
