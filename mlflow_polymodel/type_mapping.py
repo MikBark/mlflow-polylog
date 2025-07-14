@@ -34,7 +34,7 @@ class AmbiguousTypeError(RuntimeError):
         self.value_to_find = value_to_find
         self.finded_keys = finded_keys
 
-    def __repr__(self) -> str:
+    def __str__(self) -> str:
         """Return the official string representation of the exception."""
         return (
             self.__class__.__name__

@@ -3,9 +3,9 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "mlflow_polymodel"
-version = "0.0.1rc1"
-description = "This module.."
+name = "mlflow_polylog"
+version = "0.0.1"
+description = "This module..."
 authors = [
     {name = "Barkov Mikhail", email = "mik.bar@tutamail.com"},
 ]
@@ -25,16 +25,6 @@ tests = [
     "lightgbm", 
     "xgboost",
     "scikit-learn",
-    # TODO: uncomment with k
-    # "torch==2.2.2",
-    # "tensorflow==2.19.0",
-    # "fastai==2.5.*",
-    # "mxnet",
-    # "statsmodels",
-    # "prophet",
-    # "paddlepaddle",
-    # "spacy",
-    # "h2o",
 ]
 lint = [
     "ruff==0.11.13",

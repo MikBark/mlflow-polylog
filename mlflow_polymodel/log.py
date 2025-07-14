@@ -7,10 +7,11 @@ with their corresponding logging functions.
 """
 
 from collections.abc import Callable
-from typing import Any
+from typing import Any, ParamSpecKwargs
 
 from mlflow_polymodel.type_mapping import TypeMapping
 
+LogModelFunctionKwargs = ParamSpecKwargs
 LogModelFunctionType = Callable[
     ...,
     None,
@@ -21,7 +22,21 @@ def wrap_log(
     model_keyword: str,
     log_function: Callable[..., Any],
 ) -> LogModelFunctionType:
-    """..."""
+    """Create a wrapper for a model logging function.
+
+    This function generates a lambda wrapper that takes a model instance as its first
+    argument and forwards it to the original log_function using the specified keyword.
+    Additional positional and keyword arguments are passed through unchanged.
+
+    Args:
+        model_keyword: The keyword name to use for passing the model to log_function.
+        log_function: The original logging function to wrap. It should accept the model
+            via the specified keyword and return any value (though typically None).
+
+    Returns:
+        A wrapped callable that accepts a model, followed by *args and **kwargs, and
+        invokes the original log_function accordingly.
+    """
     return lambda model, *args, **kwargs: log_function(
         *args,
         **{model_keyword: model},
