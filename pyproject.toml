@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "mlflow_polylog"
 version = "0.0.1"
-description = "This module..."
+description = "A polymorphic model logging utility for MLflow that enables seamless logging of machine learning models from various libraries without requiring explicit type specification or installation of all supported frameworks. It dynamically detects installed libraries and maps model types to the appropriate MLflow logging functions."
 authors = [
     {name = "Barkov Mikhail", email = "mik.bar@tutamail.com"},
 ]
