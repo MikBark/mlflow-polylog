@@ -2,7 +2,7 @@
 
 The module dynamically detects installed ML libraries and maps their model types to the
 appropriate MLflow log_model functions. It exposes functions to retrieve default logging
-and loading handlers for use with the mlflow_polymodel package.
+and loading handlers for use with the mlflow_polylog package.
 """
 
 import importlib
@@ -11,8 +11,8 @@ from typing import Any
 
 import mlflow
 
-from mlflow_polymodel.log import PolymorphicModelLog, wrap_log
-from mlflow_polymodel.type_mapping import TypeMapping
+from mlflow_polylog.log import PolymorphicModelLog, wrap_log
+from mlflow_polylog.type_mapping import TypeMapping
 
 
 def _is_installed(package_name: str) -> bool:

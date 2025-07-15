@@ -37,7 +37,7 @@ typing = [
 ]
 
 [tool.setuptools.packages.find]
-include = [ "mlflow_polymodel" ]
+include = [ "mlflow_polylog" ]
 
 [tool.ruff]
 preview = true
@@ -104,9 +104,9 @@ pydocstyle.convention = "google"
 [tool.flake8]
 max-line-length = 90
 per-file-ignores = [
-  "mlflow_polymodel/type_mapping.py:WPS110",
-  "mlflow_polymodel/__init__.py:WPS412",
-  "mlflow_polymodel/defaults.py:WPS201,WPS231,WPS301,WPS473",
+  "mlflow_polylog/type_mapping.py:WPS110",
+  "mlflow_polylog/__init__.py:WPS412",
+  "mlflow_polylog/defaults.py:WPS201,WPS231,WPS301,WPS473",
 ]
 
 [tool.mypy]

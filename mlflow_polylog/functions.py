@@ -11,8 +11,8 @@ Main functionality includes:
 
 from typing import Any
 
-from mlflow_polymodel._internal import GLOBAL_LOG_STORE
-from mlflow_polymodel.log import LogModelFunctionType
+from mlflow_polylog._internal import GLOBAL_LOG_STORE
+from mlflow_polylog.log import LogModelFunctionType
 
 
 def log_model(model: Any, *args: Any, **kwargs: dict[str, Any]) -> None:

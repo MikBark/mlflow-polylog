@@ -2,7 +2,7 @@ import math
 
 import pytest
 
-from mlflow_polymodel.type_mapping import AmbiguousTypeError, TypeMapping
+from mlflow_polylog.type_mapping import AmbiguousTypeError, TypeMapping
 
 
 @pytest.fixture

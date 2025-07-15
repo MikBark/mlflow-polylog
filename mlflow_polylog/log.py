@@ -9,7 +9,7 @@ with their corresponding logging functions.
 from collections.abc import Callable
 from typing import Any, ParamSpecKwargs
 
-from mlflow_polymodel.type_mapping import TypeMapping
+from mlflow_polylog.type_mapping import TypeMapping
 
 LogModelFunctionKwargs = ParamSpecKwargs
 LogModelFunctionType = Callable[

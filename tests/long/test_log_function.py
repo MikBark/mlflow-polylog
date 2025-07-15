@@ -2,7 +2,7 @@ import mlflow
 import pytest
 from pytest_lazy_fixtures import lf
 
-from mlflow_polymodel import log_model
+from mlflow_polylog import log_model
 
 
 def assert_valide_model_output(output, output_example) -> bool:
