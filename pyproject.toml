@@ -3,21 +3,32 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "mlflow_polymodel"
-version = "0.0.1rc1"
-description = "This module.."
+name = "mlflow_polylog"
+version = "0.0.1"
+description = "A polymorphic model logging utility for MLflow that enables seamless logging of machine learning models from various libraries without requiring explicit type specification or installation of all supported frameworks. It dynamically detects installed libraries and maps model types to the appropriate MLflow logging functions."
 authors = [
     {name = "Barkov Mikhail", email = "mik.bar@tutamail.com"},
 ]
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.10"
 dependencies = [
     'mlflow>=2.13.0',
-    'importlib-metadata; python_version>="3.12"', ]
+    'importlib-metadata; python_version>="3.10"',
+]
+
+[project.urls]
+Homepage = "https://github.com/MikBark/mlflow-polylog"
+Repository = "https://github.com/MikBark/mlflow-polylog"
 
 [project.optional-dependencies]
 tests = [
-    "pytest==8.3.4", "pytest-lazy-fixtures==1.1.2",
+    "pytest==8.3.4", 
+    "pytest-lazy-fixtures==1.1.2",
+    # Optional ML libraries for testing
+    "catboost",
+    "lightgbm", 
+    "xgboost",
+    "scikit-learn",
 ]
 lint = [
     "ruff==0.11.13",
@@ -30,12 +41,12 @@ typing = [
 ]
 
 [tool.setuptools.packages.find]
-include = [ "mlflow_polymodel" ]
+include = [ "mlflow_polylog" ]
 
 [tool.ruff]
 preview = true
 fix = true
-target-version = "py312"
+target-version = "py310"
 line-length = 90
 
 [tool.ruff.format]
@@ -82,9 +93,6 @@ select = [
   "W",    # pycodestyle
   "YTT",  # flake8-2020
 ]
-ignore = [
-  "TRY", # Too many incorrectly recognized errors in the TypeMapping class because this class uses reflection
-]
 external = [ "WPS" ]
 
 flake8-import-conventions.banned-from = [ "ast" ]
@@ -95,14 +103,18 @@ pydocstyle.convention = "google"
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
 "defaults.py" = ["PLC0415", "PLR0912", "C901"]
+"type_mapping.py" = ["TRY"]
 
 [tool.flake8]
 max-line-length = 90
 per-file-ignores = [
-  "mlflow_polymodel/type_mapping.py:WPS110",
+  "mlflow_polylog/type_mapping.py:WPS110",
+  "mlflow_polylog/__init__.py:WPS412",
+  "mlflow_polylog/defaults.py:WPS201,WPS231,WPS301,WPS473",
 ]
 
 [tool.mypy]
+python_version = "3.10"
 ignore_missing_imports = true
 strict = true
 local_partial_types = true
@@ -110,7 +122,7 @@ warn_unreachable = true
 warn_return_any = false
 disallow_subclassing_any = false
 
-plugins = ["pydantic.mypy"]
+disable_error_code = ["attr-defined"]
 
 enable_error_code = [
   "truthy-bool",

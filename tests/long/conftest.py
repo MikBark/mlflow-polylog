@@ -3,34 +3,12 @@ import pytest
 
 
 @pytest.fixture
-def mlflow_env(tmp_path):
+def mlflow_run(tmp_path):
     tracking_uri = f'file://{tmp_path}/mlruns'
     mlflow.set_tracking_uri(tracking_uri)
 
-    original_uri = mlflow.get_tracking_uri()
-
-    yield {
-        'tracking_uri': tracking_uri,
-        'mlruns_path': tmp_path / 'mlruns',
-        'tmp_path': tmp_path,
-    }
-
-    mlflow.set_tracking_uri(original_uri)
-
-
-@pytest.fixture
-def mlflow_run(mlflow_env):
     with mlflow.start_run() as run:
-        yield {
-            'run': run,
-            'env': mlflow_env,
-            'get_artifact_path': lambda artifact_path: (
-                mlflow_env['mlruns_path']
-                / run.info.experiment_id
-                / run.info.run_id
-                / artifact_path
-            ),
-        }
+        yield run
 
 
 @pytest.fixture
@@ -356,7 +334,127 @@ def h2o_model():
         ntrees=1,
         max_depth=1,
         learn_rate=1.0,
+        min_rows=1,
     )
     model.train(x=['feature1', 'feature2'], y='target', training_frame=df)
 
     return model
+
+
+@pytest.fixture
+def pyfunc_model_and_signature(pyfunc_model):
+    input_example = {'col1': [1, 2, 3]}
+    output_example = {'col1': [1, 2, 3]}
+    return pyfunc_model, input_example, output_example
+
+
+@pytest.fixture
+def callable_model_and_signature(callable_model):
+    input_example = [1, 2, 3]
+    output_example = [1, 2, 3]
+    return callable_model, input_example, output_example
+
+
+@pytest.fixture
+def catboost_model_and_signature(catboost_model):
+    input_example = [[1, 2], [3, 4], [5, 6]]
+    output_example = [0, 1, 0]
+    return catboost_model, input_example, output_example
+
+
+@pytest.fixture
+def lightgbm_booster_model_and_signature(lightgbm_booster_model):
+    input_example = [[1, 2], [3, 4], [5, 6]]
+    output_example = [0, 1, 0]
+    return lightgbm_booster_model, input_example, output_example
+
+
+@pytest.fixture
+def lightgbm_lgbm_model_and_signature(lightgbm_lgbm_model):
+    input_example = [[1, 2], [3, 4], [5, 6]]
+    output_example = [0, 1, 0]
+    return lightgbm_lgbm_model, input_example, output_example
+
+
+@pytest.fixture
+def xgboost_booster_model_and_signature(xgboost_booster_model):
+    input_example = [[1, 2], [3, 4], [5, 6]]
+    output_example = [0, 1, 0]
+    return xgboost_booster_model, input_example, output_example
+
+
+@pytest.fixture
+def xgboost_xgb_model_and_signature(xgboost_xgb_model):
+    input_example = [[1, 2], [3, 4], [5, 6]]
+    output_example = [0, 1, 0]
+    return xgboost_xgb_model, input_example, output_example
+
+
+@pytest.fixture
+def sklearn_model_and_signature(sklearn_model):
+    input_example = [[1, 2], [3, 4], [5, 6]]
+    output_example = [0, 1, 0]
+    return sklearn_model, input_example, output_example
+
+
+@pytest.fixture
+def torch_model_and_signature(torch_model):
+    input_example = [[1.0, 2.0], [3.0, 4.0]]
+    output_example = [[0.0], [1.0]]
+    return torch_model, input_example, output_example
+
+
+@pytest.fixture
+def tensorflow_model_and_signature(tensorflow_model):
+    input_example = [[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]]
+    output_example = [0, 1, 0]
+    return tensorflow_model, input_example, output_example
+
+
+@pytest.fixture
+def fastai_model_and_signature(fastai_model):
+    input_example = {'feature1': [1, 2, 3], 'feature2': [4, 5, 6]}
+    output_example = [0, 1, 0]
+    return fastai_model, input_example, output_example
+
+
+@pytest.fixture
+def mxnet_model_and_signature(mxnet_model):
+    input_example = [[1.0, 2.0], [3.0, 4.0]]
+    output_example = [[0.0], [1.0]]
+    return mxnet_model, input_example, output_example
+
+
+@pytest.fixture
+def statsmodels_model_and_signature(statsmodels_model):
+    input_example = [[1, 2], [3, 4], [5, 6]]
+    output_example = [0, 1, 0]
+    return statsmodels_model, input_example, output_example
+
+
+@pytest.fixture
+def prophet_model_and_signature(prophet_model):
+    input_example = {'ds': ['2021-01-01', '2021-01-02', '2021-01-03']}
+    output_example = [1, 2, 3]
+    return prophet_model, input_example, output_example
+
+
+@pytest.fixture
+def paddlepaddle_model_and_signature(paddlepaddle_model):
+    input_example = [[1.0, 2.0], [3.0, 4.0]]
+    output_example = [[0.0], [1.0]]
+    return paddlepaddle_model, input_example, output_example
+
+
+@pytest.fixture
+def spacy_model_and_signature(spacy_model):
+    input_example = ['This is a sentence.']
+    output_example = [['This', 'is', 'a', 'sentence', '.']]
+    return spacy_model, input_example, output_example
+
+
+@pytest.fixture
+def h2o_model_and_signature(h2o_model):
+    input_example = [[1, 2], [3, 4], [5, 6]]
+    output_example = [0, 1, 0]
+    return h2o_model, input_example, output_example

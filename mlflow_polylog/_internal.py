@@ -5,8 +5,8 @@ model log method. It ensures that logging methods for models can be accessed and
 updated globally, with support for lazy initialization using a default log method.
 """
 
-from mlflow_polymodel.defaults import get_default_log
-from mlflow_polymodel.log import PolymorphicModelLog
+from mlflow_polylog.defaults import get_default_log
+from mlflow_polylog.log import PolymorphicModelLog
 
 
 class GlobalStore:
@@ -26,7 +26,7 @@ class GlobalStore:
         """Return the currently stored polymorphic model log method.
 
         If no method has been set, this will lazily initialize the store with the
-        default mlflow log method using `mlflow_polymodel.defaults.get_default_log`.
+        default mlflow log method using `mlflow_polylog.defaults.get_default_log`.
         This approach helps avoid expensive imports or initialization until the log
         method is actually needed.
 

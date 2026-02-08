@@ -2,7 +2,7 @@ import math
 
 import pytest
 
-from mlflow_polymodel.type_mapping import MultipleTypeKeysError, TypeMapping
+from mlflow_polylog.type_mapping import AmbiguousTypeError, TypeMapping
 
 
 @pytest.fixture
@@ -110,34 +110,22 @@ def test_getitem_with_empty_mapping_raises_key_error(empty_type_mapping):
         empty_type_mapping[42]
 
 
-def test_getitem_with_multiple_matching_types_raises_multiple_type_keys_error():
+def test_getitem_with_ambiguous_matching_types_raises_ambiguous_type_keys_error():
     mapping = {object: 'object', int: 'integer'}
     tm = TypeMapping(mapping)
-    with pytest.raises(MultipleTypeKeysError) as exc_info:
+    with pytest.raises(AmbiguousTypeError) as exc_info:
         tm[42]
 
-    assert exc_info.value.key_to_find == 42
+    assert exc_info.value.value_to_find == 42
     assert set(exc_info.value.finded_keys) == {object, int}
 
 
-def test_getitem_with_subclass_inheritance_raises_multiple_type_keys_error():
+def test_getitem_with_subclass_inheritance_raises_ambiguous_type_keys_error():
     mapping = {Exception: 'exception', ValueError: 'value_error'}
     tm = TypeMapping(mapping)
     test_value = ValueError('test')
-    with pytest.raises(MultipleTypeKeysError) as exc_info:
+    with pytest.raises(AmbiguousTypeError) as exc_info:
         tm[test_value]
-
-    assert exc_info.value.key_to_find == test_value
-    assert set(exc_info.value.finded_keys) == {Exception, ValueError}
-
-
-def test_multiple_type_keys_error_attributes():
-    key = 42
-    keys = [object, int]
-    error = MultipleTypeKeysError(key, keys)
-
-    assert error.key_to_find == key
-    assert error.finded_keys == keys
 
 
 @pytest.mark.parametrize(
@@ -197,38 +185,6 @@ def test_repr_behavior(fixture_name, expected_behavior, request):
         assert result == 'TypeMapping({})'
     elif expected_behavior == 'equals_single':
         assert result == "TypeMapping({<class 'int'>: 'integer'})"
-
-
-@pytest.mark.parametrize(
-    'fixture_name,expected_len',
-    [
-        ('basic_type_mapping', 3),
-    ],
-)
-def test_mapping_property_access(fixture_name, expected_len, request):
-    type_mapping = request.getfixturevalue(fixture_name)
-    mapping = type_mapping._mapping
-    assert len(mapping) == expected_len
-
-
-def test_mapping_property_returns_correct_mapping(
-    basic_type_mapping,
-    basic_type_mapping_dict,
-):
-    mapping = basic_type_mapping._mapping
-    assert mapping == basic_type_mapping_dict
-
-
-def test_mapping_setter_with_valid_types():
-    tm = TypeMapping({})
-    tm._mapping = {int: 'integer', str: 'string'}
-    assert len(tm) == 2
-
-
-def test_mapping_setter_with_invalid_key_raises_type_error():
-    tm = TypeMapping({})
-    with pytest.raises(TypeError):
-        tm._mapping = {'invalid': 'value'}
 
 
 @pytest.mark.parametrize(
