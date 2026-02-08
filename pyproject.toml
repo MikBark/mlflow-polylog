@@ -16,6 +16,10 @@ dependencies = [
     'importlib-metadata; python_version>="3.10"',
 ]
 
+[project.urls]
+Homepage = "https://github.com/MikBark/mlflow-polylog"
+Repository = "https://github.com/MikBark/mlflow-polylog"
+
 [project.optional-dependencies]
 tests = [
     "pytest==8.3.4", 
